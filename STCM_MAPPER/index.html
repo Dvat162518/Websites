@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STCM Mapper - ROS Noetic SLAM Software</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #304ffe;
+            --accent-color: #f50057;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --card-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: rgba(26, 35, 126, 0.98);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo i {
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            padding: 10rem 2rem 6rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/api/placeholder/1200/400') center/cover;
+            opacity: 0.1;
+            animation: pulse 4s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+            100% { opacity: 0.1; }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            color: var(--accent-color);
+        }
+
+        .documentation {
+            background-color: white;
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .documentation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+        }
+
+        .doc-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .doc-card {
+            padding: 2rem;
+            border-radius: 20px;
+            background: white;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.8rem;
+            transition: var(--transition);
+            opacity: 0.8;
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* Mobile menu button */
+        .menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .menu-button {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-color);
+                padding: 1rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-color);
+            z-index: 1001;
+            transition: width 0.2s;
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-robot"></i>
+                STCM Mapper
+            </a>
+            <button class="menu-button" id="menuButton">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="#features"><i class="fas fa-star"></i> Features</a>
+                <a href="#documentation"><i class="fas fa-book"></i> Docs</a>
+                <a href="#resources"><i class="fas fa-cube"></i> Resources</a>
+                <a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1><i class="fas fa-map-marked-alt"></i> STCM Mapper for ROS Noetic</h1>
+        <p>Advanced SLAM mapping software with interactive 3D visualization and editing capabilities</p>
+        <a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software" class="cta-button">
+            <i class="fab fa-github"></i> View on GitHub
+        </a>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-vr-cardboard feature-icon"></i>
+                <h3>3D Visualization</h3>
+                <p>Interactive 3D map visualization with RViz-style controls and real-time updates</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-pencil-ruler feature-icon"></i>
+                <h3>Map Editing</h3>
+                <p>Powerful editing tools including virtual walls, rectangles, and circles</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-file-export feature-icon"></i>
+                <h3>Multi-format Export</h3>
+                <p>Export maps in various formats including STCM, PNG, SVG, and PDF</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3>ROS Integration</h3>
+                <p>Seamless integration with ROS Noetic and navigation stack</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-clock feature-icon"></i>
+                <h3>Real-time Processing</h3>
+                <p>Fast and efficient real-time SLAM processing capabilities</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-code-branch feature-icon"></i>
+                <h3>Version Control</h3>
+                <p>Built-in version control for map changes and collaborative editing</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="documentation" class="documentation">
+        <div class="doc-content">
+            <h2>Documentation</h2>
+            <div class="doc-grid">
+                <div class="doc-card">
+                    <i class="fas fa-book-open feature-icon"></i>
+                    <h3>Installation Guide</h3>
+                    <p>Step-by-step installation instructions for ROS Noetic environment</p>
+                    <a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software#installation" class="cta-button">
+                        <i class="fas fa-arrow-right"></i> Learn More
+                    </a>
+                </div>
+                <div class="doc-card">
+                    <i class="fas fa-code feature-icon"></i>
+                    <h3>API Reference</h3>
+                    <p>Complete API documentation and usage examples</p>
+                    <a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software/wiki" class="cta-button">
+                        <i class="fas fa-arrow-right"></i> View Docs
+                    </a>
+                </div>
+                <div class="doc-card">
+                    <i class="fas fa-graduation-cap feature-icon"></i>
+                    <h3>Tutorials</h3>
+                    <p>Get started with tutorials and examples</p>
+                    <a href="#" class="cta-button">
+                        <i class="fas fa-arrow-right"></i> Start Learning
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources" class="features">
+        <h2>Resources</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-book feature-icon"></i>
+                <h3>ROS Resources</h3>
+                <ul>
+                    <li><a href="http://wiki.ros.org/noetic"><i class="fas fa-link"></i> ROS Noetic Wiki</a></li>
+                    <li><a href="http://wiki.ros.org/slam_gmapping"><i class="fas fa-link"></i> SLAM Gmapping</a></li>
+                    <li><a href="http://wiki.ros.org/navigation"><i class="fas fa-link"></i> ROS Navigation Stack</a></li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users feature-icon"></i>
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="https://discourse.ros.org/"><i class="fas fa-comments"></i> ROS Discourse</a></li>
+                    <li><a href="https://answers.ros.org/"><i class="fas fa-question-circle"></i> ROS Answers</a></li>
+                    <li><a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software/discussions"><i class="fab fa-github"></i> Project Discussions</a></li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-life-ring feature-icon"></i>
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software/issues"><i class="fas fa-bug"></i> Issue Tracker</a></li>
+                    <li><a href="https://github.com/Dvat162518/SLAM_ROS-Noetic-_STCM_MAPPER_Software/wiki/FAQ"><i class="fas fa-question"></i> FAQ</a></li>
+                    <li><a href="mailto:your.email@example.com"><i class="fas fa-envelope"></i> Contact Support</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://github.com/Dvat162518" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/your-profile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://twitter.com/your-profile" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p>© 2024 STCM Mapper. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.getElementById('menuButton');
+        const navLinks = document.getElementById('navLinks');
+        menuButton.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Progress bar
+        const progressBar = document.getElementById('progressBar');
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            progressBar.style.width = scrolled + '%';
+        });
+
+        // Scroll to top button
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(26, 35, 126, 0.98)';
+            } else {
+                navbar.style.background = 'var(--primary-color)';
+            }
+        });
+
+        // Feature card animation
+        const cards = document.querySelectorAll('.feature-card');
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
